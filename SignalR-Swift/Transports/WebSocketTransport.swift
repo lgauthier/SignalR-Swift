@@ -70,10 +70,6 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         self.webSocket = nil
     }
 
-    private func log(_ message: String) {
-        print("SignalR-Swift Log: \(message)")
-    }
-
     // MARK: - WebSockets transport
 
     func performConnect(completionHandler: ((_ response: String?, _ error: Error?) -> ())?) {
@@ -156,6 +152,7 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         
         switch event {
         case .connected:
+        SignalRLogger.log("Did receive \"connected\" event.")
             handleDidConnect(client: client)
         
         case .disconnected(let reason, let code):
@@ -163,6 +160,7 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
             handleDidDisconnect(client: client, reason: reason, code: code)
         
         case .text(let string):
+        SignalRLogger.log("Did receive \"text\" event.")
             handleDidReceiveMessage(client: client, text: string)
         
         case .binary(let data):
@@ -175,6 +173,7 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
             SignalRLogger.log("Did receive \"ping\" event (data: \(data.flatMap { String(data: $0, encoding: .utf8) } ?? "nil")).")
         
         case .error(let error):
+            SignalRLogger.log("Did receive \"error\" event (error: \(error?.localizedDescription ?? "nil")).")
             handleError(error)
             
         case .viablityChanged(let isViable):
