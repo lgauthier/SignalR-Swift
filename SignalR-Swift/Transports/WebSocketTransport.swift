@@ -129,7 +129,7 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
             }
 
             if let encodedRequest = request?.request {
-                self.webSocket = WebSocket(request: encodedRequest)
+                self.webSocket = WebSocket(request: encodedRequest, certPinner: FoundationSecurity(allowSelfSigned: true))
                 self.webSocket!.delegate = self
                 self.webSocket!.connect()
             }
