@@ -152,7 +152,6 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         
         switch event {
         case .connected:
-        SignalRLogger.log("Did receive \"connected\" event.")
             handleDidConnect(client: client)
         
         case .disconnected(let reason, let code):
@@ -160,7 +159,6 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
             handleDidDisconnect(client: client, reason: reason, code: code)
         
         case .text(let string):
-        SignalRLogger.log("Did receive \"text\" event.")
             handleDidReceiveMessage(client: client, text: string)
         
         case .binary(let data):
