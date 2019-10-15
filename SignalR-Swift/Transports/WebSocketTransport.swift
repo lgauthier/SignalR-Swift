@@ -70,6 +70,10 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         self.webSocket = nil
     }
 
+    private func log(_ message: String) {
+        print("SignalR-Swift Log: \(message)")
+    }
+
     // MARK: - WebSockets transport
 
     func performConnect(completionHandler: ((_ response: String?, _ error: Error?) -> ())?) {
@@ -130,7 +134,6 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
 
             if let encodedRequest = request?.request {
                 self.webSocket = WebSocket(request: encodedRequest)
-//                self.webSocket!.disableSSLCertValidation = connection?.webSocketAllowsSelfSignedSSL ?? false
                 self.webSocket!.delegate = self
                 self.webSocket!.connect()
             }
@@ -148,49 +151,49 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
     }
 
     // MARK: - WebSocketDelegate
-
-//    public func websocketDidConnect(socket: WebSocketClient){
-//        if let connection = self.connectionInfo?.connection, connection.changeState(oldState: .reconnecting, toState: .connected) {
-//            connection.didReconnect()
-//        }
-//    }
+    
+    public func didReceive(event: WebSocketEvent, client: WebSocket) {
+        
+        switch event {
+        case .connected:
+            handleDidConnect(client: client)
+        case .disconnected(let reason, let code):
+            handleDidDisconnect(client: client, reason: reason, code: code)
+        case .text(let string):
+            handleDidReceiveMessage(client: client, text: string)
+        case .binary(let data):
+            handleDidReceiveMessage(client: client, text: String(data: data, encoding: .utf8) ?? "")
+        case .pong(let data):
+            handleDidReceiveMessage(client: client, text: data.flatMap { String(data: $0, encoding: .utf8) } ?? "")
+        case .ping(let data):
+            handleDidReceiveMessage(client: client, text: data.flatMap { String(data: $0, encoding: .utf8) } ?? "")
+        case .error(let error):
+            error.flatMap { handleError($0) }
+        case .viablityChanged(let isViable):
+            log("Did receive \"viabilityChanged\" event (isViable: \(isViable)).")
+        case .reconnectSuggested(let isReconnectSuggested):
+            log("Did receive \"reconnectSuggested\" event (isReconnectSuggested: \(isReconnectSuggested)).")
+        case .cancelled:
+            log("Did receive \"cancelled\" event.")
+        }
+    }
     
     private func handleDidConnect(client: WebSocket) {
+        
         if let connection = self.connectionInfo?.connection, connection.changeState(oldState: .reconnecting, toState: .connected) {
             connection.didReconnect()
         }
     }
     
-//    public func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
-//        if let error = error {
-//            webSocketError(error)
-//        }
-//        else if !self.tryCompleteAbort() {
-//            self.reconnect(connection: self.connectionInfo?.connection)
-//        }
-//    }
-    
     private func handleDidDisconnect(client: WebSocket, reason: String, code: UInt16) {
+        
         if !self.tryCompleteAbort() {
             self.reconnect(connection: self.connectionInfo?.connection)
         }
     }
-
-//    private func webSocketError(_ error: Error) {
-//        if let startClosure = self.startClosure, let connectTimeoutOperation = self.connectTimeoutOperation {
-//            NSObject.cancelPreviousPerformRequests(withTarget: connectTimeoutOperation, selector: #selector(BlockOperation.start), object: nil)
-//
-//            self.connectTimeoutOperation = nil
-//            self.stopWebSocket()
-//
-//            self.startClosure = nil
-//            startClosure(nil, error)
-//        } else if !self.startedAbort {
-//            self.reconnect(connection: self.connectionInfo?.connection)
-//        }
-//    }
     
     private func handleError(_ error: Error) {
+        
         if let startClosure = self.startClosure, let connectTimeoutOperation = self.connectTimeoutOperation {
             NSObject.cancelPreviousPerformRequests(withTarget: connectTimeoutOperation, selector: #selector(BlockOperation.start), object: nil)
 
@@ -204,29 +207,8 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         }
     }
 
-//    public func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-//        var timedOut = false
-//        var disconnected = false
-//
-//        if let connection = self.connectionInfo?.connection, let data = text.data(using: .utf8) {
-//            connection.processResponse(response: data, shouldReconnect: &timedOut, disconnected: &disconnected)
-//        }
-//
-//        if let startClosure = self.startClosure, let connectTimeoutOperation = self.connectTimeoutOperation {
-//            NSObject.cancelPreviousPerformRequests(withTarget: connectTimeoutOperation, selector: #selector(BlockOperation.start), object: nil)
-//            self.connectTimeoutOperation = nil
-//
-//            self.startClosure = nil
-//            startClosure(nil, nil)
-//        }
-//
-//        if disconnected {
-//            self.connectionInfo?.connection?.disconnect()
-//            self.stopWebSocket()
-//        }
-//    }
-    
     private func handleDidReceiveMessage(client: WebSocket, text: String) {
+        
         var timedOut = false
         var disconnected = false
 
@@ -247,33 +229,4 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
             self.stopWebSocket()
         }
     }
-    
-    public func didReceive(event: WebSocketEvent, client: WebSocket) {
-        
-        switch event {
-        case .connected(let headers):
-            handleDidConnect(client: client)
-        case .disconnected(let reason, let code):
-            handleDidDisconnect(client: client, reason: reason, code: code)
-        case .text(let string):
-            handleDidReceiveMessage(client: client, text: string)
-        case .binary(let data):
-            handleDidReceiveMessage(client: client, text: String(data: data, encoding: .utf8) ?? "")
-        case .pong(let data):
-            handleDidReceiveMessage(client: client, text: data.flatMap { String(data: $0, encoding: .utf8) } ?? "")
-        case .ping(let data):
-            handleDidReceiveMessage(client: client, text: data.flatMap { String(data: $0, encoding: .utf8) } ?? "")
-        case .error(let error):
-            error.flatMap { handleError($0) }
-//        case .viablityChanged(let isViable):
-//        case .reconnectSuggested(let isReconnectSuggested):
-//        case .cancelled:
-        default:
-            break
-        }
-        
-    }
-    
-//    public func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
-//    }
 }
