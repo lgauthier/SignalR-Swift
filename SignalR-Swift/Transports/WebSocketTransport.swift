@@ -157,24 +157,34 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         switch event {
         case .connected:
             handleDidConnect(client: client)
+        
         case .disconnected(let reason, let code):
+            SignalRLogger.log("Did receive \"disconnected\" event (reason: \(reason), code: \(code)).")
             handleDidDisconnect(client: client, reason: reason, code: code)
+        
         case .text(let string):
             handleDidReceiveMessage(client: client, text: string)
+        
         case .binary(let data):
-            handleDidReceiveMessage(client: client, text: String(data: data, encoding: .utf8) ?? "")
+            SignalRLogger.log("Did receive \"binary\" event (data: \(String(data: data, encoding: .utf8) ?? "nil")).")
+        
         case .pong(let data):
-            handleDidReceiveMessage(client: client, text: data.flatMap { String(data: $0, encoding: .utf8) } ?? "")
+            SignalRLogger.log("Did receive \"pong\" event (data: \(data.flatMap { String(data: $0, encoding: .utf8) } ?? "nil")).")
+        
         case .ping(let data):
-            handleDidReceiveMessage(client: client, text: data.flatMap { String(data: $0, encoding: .utf8) } ?? "")
+            SignalRLogger.log("Did receive \"ping\" event (data: \(data.flatMap { String(data: $0, encoding: .utf8) } ?? "nil")).")
+        
         case .error(let error):
-            error.flatMap { handleError($0) }
+            handleError(error)
+            
         case .viablityChanged(let isViable):
-            log("Did receive \"viabilityChanged\" event (isViable: \(isViable)).")
+            SignalRLogger.log("Did receive \"viabilityChanged\" event (isViable: \(isViable)).")
+            
         case .reconnectSuggested(let isReconnectSuggested):
-            log("Did receive \"reconnectSuggested\" event (isReconnectSuggested: \(isReconnectSuggested)).")
+            SignalRLogger.log("Did receive \"reconnectSuggested\" event (isReconnectSuggested: \(isReconnectSuggested)).")
+            
         case .cancelled:
-            log("Did receive \"cancelled\" event.")
+            SignalRLogger.log("Did receive \"cancelled\" event.")
         }
     }
     
@@ -192,7 +202,7 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
         }
     }
     
-    private func handleError(_ error: Error) {
+    private func handleError(_ error: Error?) {
         
         if let startClosure = self.startClosure, let connectTimeoutOperation = self.connectTimeoutOperation {
             NSObject.cancelPreviousPerformRequests(withTarget: connectTimeoutOperation, selector: #selector(BlockOperation.start), object: nil)
