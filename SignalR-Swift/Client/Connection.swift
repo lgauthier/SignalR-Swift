@@ -7,8 +7,11 @@
 //
 
 import Foundation
-import UIKit
 import Alamofire
+
+#if os(iOS)
+import UIKit
+#endif
 
 public typealias ConnectionStartedClosure = (() -> ())
 public typealias ConnectionReceivedClosure = ((Any) -> ())
@@ -311,12 +314,15 @@ public class Connection: ConnectionProtocol {
         return sessionManager.request(encodedURLRequest!)
     }
 
+    
     func createUserAgentString(client: String) -> String {
-        if self.assemblyVersion == nil {
-            self.assemblyVersion = Version(major: 2, minor: 0)
-        }
+        let assemblyVersion = self.assemblyVersion ?? Version(major: 2, minor: 0)
 
-        return "\(client)/\(self.assemblyVersion!) (\(UIDevice.current.localizedModel) \(UIDevice.current.systemVersion))"
+        #if os(iOS)
+            return "\(client)/\(assemblyVersion) (\(UIDevice.current.localizedModel) \(UIDevice.current.systemVersion))"
+        #else
+            return "\(client)/\(assemblyVersion) macOS Machine"
+        #endif
     }
 
     public func processResponse(response: Data, shouldReconnect: inout Bool, disconnected: inout Bool) {
