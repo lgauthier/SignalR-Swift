@@ -25,7 +25,7 @@ class ConnectionTests: QuickSpec {
 
         it("should cause a closed event when transport error occurs") {
             self.connection.start(transport: self.mockClientTransport)
-            self.expectation(description: "gets closed when transport errors out")
+            _ = self.expectation(description: "gets closed when transport errors out")
             
             self.waitForExpectations(timeout: 5.0, handler: { error in
                 if let theError = error {

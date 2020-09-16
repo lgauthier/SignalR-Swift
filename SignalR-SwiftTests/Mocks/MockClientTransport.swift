@@ -23,11 +23,11 @@ class MockClientTransport: ClientTransportProtocol, Mock {
     }
 
     var name: String? {
-        return self.callHandler.accept("", ofFunction: #function, atFile: #file, inLine: #line, withArgs: self.name) as! String?
+        return self.callHandler.accept("", ofFunction: #function, atFile: #file, inLine: #line, withArgs: "") as! String?
     }
 
     var supportsKeepAlive: Bool {
-        return self.callHandler.accept(true, ofFunction: #function, atFile: #file, inLine: #line, withArgs: self.supportsKeepAlive) as! Bool
+        return self.callHandler.accept(true, ofFunction: #function, atFile: #file, inLine: #line, withArgs: true) as! Bool
     }
 
     func negotiate(connection: ConnectionProtocol, connectionData: String?, completionHandler: ((_ response: NegotiationResponse?, _ error: Error?) -> ())?) {
