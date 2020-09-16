@@ -174,7 +174,7 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
             SignalRLogger.log("Did receive \"error\" event (error: \(error?.localizedDescription ?? "nil")).")
             handleError(error)
             
-        case .viablityChanged(let isViable):
+        case .viabilityChanged(let isViable):
             SignalRLogger.log("Did receive \"viabilityChanged\" event (isViable: \(isViable)).")
             
         case .reconnectSuggested(let isReconnectSuggested):

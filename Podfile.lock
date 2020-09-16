@@ -3,39 +3,31 @@ PODS:
   - Mockit (1.3.4)
   - Nimble (7.0.3)
   - Quick (1.2.0)
-  - Starscream (4.0.0)
+  - Starscream (4.0.4)
 
 DEPENDENCIES:
   - Alamofire (~> 4.2)
   - Mockit (~> 1.3)
   - Nimble
   - Quick
-  - Starscream (from `https://github.com/daltoniam/Starscream`, commit `83ae006b5c2a312529b75e5074b180e23a03e74d`)
+  - Starscream (~> 4.0.0)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - Mockit
     - Nimble
     - Quick
-
-EXTERNAL SOURCES:
-  Starscream:
-    :commit: 83ae006b5c2a312529b75e5074b180e23a03e74d
-    :git: https://github.com/daltoniam/Starscream
-
-CHECKOUT OPTIONS:
-  Starscream:
-    :commit: 83ae006b5c2a312529b75e5074b180e23a03e74d
-    :git: https://github.com/daltoniam/Starscream
+  trunk:
+    - Starscream
 
 SPEC CHECKSUMS:
   Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   Mockit: 1b253f229dde898b268f8bd5dffcf2fd0151ff75
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
-  Starscream: cfa66c54dfb6464500ba8ad9af76f73936022e48
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
 
-PODFILE CHECKSUM: 6a203e22f177419a4f0ecb51c69bde762eef90a5
+PODFILE CHECKSUM: 1a9b63961253eeb4d2efb38d5b81e3257ea1c3e5
 
-COCOAPODS: 1.6.2
+COCOAPODS: 1.9.3
