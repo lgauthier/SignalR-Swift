@@ -139,11 +139,11 @@ public class WebSocketTransport: HttpTransport, WebSocketDelegate {
     }
 
     func reconnect(connection: ConnectionProtocol?) {
-        _ = BlockOperation { [weak self] in
+        BlockOperation { [weak self] in
             if let strongSelf = self, let connection = connection, Connection.ensureReconnecting(connection: connection) {
                 strongSelf.performConnect(reconnecting: true, completionHandler: nil)
             }
-            }.perform(#selector(BlockOperation.start), with: nil, afterDelay: self.reconnectDelay)
+        }.perform(#selector(BlockOperation.start), with: nil, afterDelay: self.reconnectDelay)
     }
 
     // MARK: - WebSocketDelegate
