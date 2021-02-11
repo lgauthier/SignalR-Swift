@@ -15,7 +15,7 @@ open class HubConnection: Connection, HubConnectionProtocol {
     private var callbacks = [String: HubConnectionHubResultClosure]()
     private var callbackId = UInt.min
     
-    public init(withUrl url: String,
+    required public init(withUrl url: String,
                 queryString: [String: String]? = nil,
                 sessionManager: SessionManager = .default,
                 useDefault: Bool = true) {
