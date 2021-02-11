@@ -10,7 +10,7 @@ import Foundation
 
 public typealias Subscription = ([Any]) -> ()
 
-protocol HubProxyProtocol {
+public protocol HubProxyProtocol {
     func on(eventName: String, handler: @escaping Subscription) -> Subscription?
 
     func invoke(method: String, withArgs args: [Any])

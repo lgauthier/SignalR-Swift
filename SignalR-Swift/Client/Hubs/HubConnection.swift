@@ -24,7 +24,7 @@ open class HubConnection: Connection, HubConnectionProtocol {
                    sessionManager: sessionManager)
     }
 
-    open func createHubProxy(hubName: String) -> HubProxy? {
+    open func createHubProxy(hubName: String) -> HubProxyProtocol? {
         if self.state != .disconnected {
             NSException.raise(.internalInconsistencyException, format: NSLocalizedString("Proxies cannot be added after the connection has been started.", comment: "proxy added after connection starts exception"), arguments: getVaList(["nil"]))
         }
