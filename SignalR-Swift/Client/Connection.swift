@@ -22,7 +22,7 @@ public typealias ConnectionReconnectedClosure = (() -> ())
 public typealias ConnectionStateChangedClosure = ((ConnectionState) -> ())
 public typealias ConnectionConnectionSlowClosure = (() -> ())
 
-public class Connection: ConnectionProtocol {
+open class Connection: ConnectionProtocol {
     var defaultAbortTimeout = 30.0
     var assemblyVersion: Version?
     var disconnectTimeout: Double?

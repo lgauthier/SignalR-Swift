@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-public class HubConnection: Connection, HubConnectionProtocol {
+open class HubConnection: Connection, HubConnectionProtocol {
 
     private var hubs = [String: HubProxy]()
     private var callbacks = [String: HubConnectionHubResultClosure]()
